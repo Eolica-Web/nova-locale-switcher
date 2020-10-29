@@ -89,6 +89,30 @@ final class NovaServiceProvider extends NovaApplicationServiceProvider
 }
 ```
 
+The last step is to display the language selector. For that we must [publish](https://nova.laravel.com/docs/3.0/installation.html#updating-nova-s-assets) Nova's views executing the next command:
+
+``` bash
+php artisan nova:publish
+```
+
+Now we go to the file `/resources/views/vendor/nova/layout.blade.php` and right after the dropdown that includes the user's partial we add the `locale-switcher` Vue component:
+
+``` html
+<!-- Content -->
+<div>
+    ...
+
+    <dropdown class="ml-auto h-9 flex items-center dropdown-right">
+        @include('nova::partials.user')
+    </dropdown>
+
+    <!-- HERE! -->
+    <locale-switcher></locale-switcher>
+</div>
+```
+
+And that should be it!
+
 This is one of many solutions you can use, the important thing is that you can switch to another type of implementation without depending on an external package.
 
 ## Changelog
