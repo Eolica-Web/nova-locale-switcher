@@ -13,8 +13,6 @@ final class LocaleSwitcher extends Tool
     public function __construct(array $locales = [], $component = null)
     {
         $this->setLocales($locales);
-
-        parent::__construct($component);
     }
 
     public function boot()
