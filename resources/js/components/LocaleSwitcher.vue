@@ -31,9 +31,7 @@
     }),
 
     mounted() {
-      Nova.request()
-      .get('/nova-vendor/locale-switcher/locales')
-      .then(response => this.locales = response.data.locales)
+      this.getLocales()
     },
 
     computed: {
@@ -58,6 +56,12 @@
             locale: locale
           })
           .then(() => window.location.reload())
+      },
+
+      async getLocales() {
+          Nova.request()
+            .get('/nova-vendor/locale-switcher/locales')
+            .then(response => this.locales = response.data.locales)
       }
     }
   }
