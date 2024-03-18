@@ -2,10 +2,11 @@
 
 namespace Eolica\NovaLocaleSwitcher;
 
+use Illuminate\Http\Request;
 use Laravel\Nova\Nova;
 use Laravel\Nova\Tool;
 
-final class LocaleSwitcher extends Tool
+class LocaleSwitcher extends Tool
 {
     private $locales;
     private $onSwitchLocaleHandler;
@@ -46,5 +47,16 @@ final class LocaleSwitcher extends Tool
     public function onSwitchLocaleHandler(): callable
     {
         return $this->onSwitchLocaleHandler;
+    }
+
+    /**
+     * Build the menu that renders the navigation links for the tool.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return mixed
+     */
+    public function menu(Request $request)
+    {
+
     }
 }

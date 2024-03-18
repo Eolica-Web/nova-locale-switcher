@@ -1,29 +1,29 @@
 <template>
-    <dropdown class="ml-8 h-9 flex items-center dropdown-right">
-        <dropdown-trigger class="h-9 flex items-center">
-            <div class="mr-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                    <path class="heroicon-ui" d="M4.06 13a8 8 0 0 0 5.18 6.51A18.5 18.5 0 0 1 8.02 13H4.06zm0-2h3.96a18.5 18.5 0 0 1 1.22-6.51A8 8 0 0 0 4.06 11zm15.88 0a8 8 0 0 0-5.18-6.51A18.5 18.5 0 0 1 15.98 11h3.96zm0 2h-3.96a18.5 18.5 0 0 1-1.22 6.51A8 8 0 0 0 19.94 13zm-9.92 0c.16 3.95 1.23 7 1.98 7s1.82-3.05 1.98-7h-3.96zm0-2h3.96c-.16-3.95-1.23-7-1.98-7s-1.82 3.05-1.98 7zM12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20z"/>
-                </svg>
-            </div>
+    <Dropdown placement="bottom-end">
+        <DropdownTrigger :show-arrow="false"
+                         class="h-10 w-10 hover:text-primary-500">
+            <Icon type="globe-alt" />
+        </DropdownTrigger>
 
-            <span class="text-90">{{ locales[currentLocale] }}</span>
-        </dropdown-trigger>
-
-        <dropdown-menu slot="menu" width="200" direction="rtl">
-            <ul class="list-reset">
-                <li v-for="(name, locale) in localesWithoutCurrent" :key="locale" :data="locale">
-                    <a href="#" @click.prevent="switchLocale(locale)" class="block no-underline text-90 hover:bg-30 p-3">
+        <template #menu>
+            <DropdownMenu>
+                <div class="flex flex-col py-1">
+                    <DropdownMenuItem v-for="(name, locale) in localesWithoutCurrent"
+                                      :key="locale"
+                                      as="button"
+                                      @click.prevent="switchLocale(locale)"
+                                      class="flex hover:bg-gray-100 py-1">
                         {{ name }}
-                    </a>
-                </li>
-            </ul>
-        </dropdown-menu>
-    </dropdown>
+                    </DropdownMenuItem>
+                </div>
+            </DropdownMenu>
+        </template>
+    </Dropdown>
 </template>
 
 <script>
   import _ from 'lodash'
+  import { mapGetters } from 'vuex'
 
   export default {
     data: () => ({
@@ -31,14 +31,17 @@
     }),
 
     mounted() {
-      Nova.request()
-      .get('/nova-vendor/locale-switcher/locales')
-      .then(response => this.locales = response.data.locales)
+      this.getLocales()
     },
 
     computed: {
+      ...mapGetters(['currentUser']),
+
       currentLocale() {
-        return window.config.locale ? window.config.locale : 'en'
+        if (this.currentUser) {
+          return this.currentUser.locale
+        }
+        return Nova.config('locale') ? Nova.config('locale') : 'en'
       },
 
       localesWithoutCurrent() {
@@ -53,6 +56,12 @@
             locale: locale
           })
           .then(() => window.location.reload())
+      },
+
+      async getLocales() {
+          Nova.request()
+            .get('/nova-vendor/locale-switcher/locales')
+            .then(response => this.locales = response.data.locales)
       }
     }
   }
